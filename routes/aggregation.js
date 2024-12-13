@@ -1,10 +1,10 @@
 import {express} from 'express';
-import {connectDb} from '../config/database.js';
+import {connectDB} from '../config/database.js';
 const router = express.router();
 
 router.get('/patients/aggregated-diagnosis', async(req,res) => {
     //most common diagnosis
-    const db =await connectDb();
+    const db =await connectDB();
     const patients = db.collection('patients');
     const result = await patients.aggregate([
         {
@@ -25,7 +25,7 @@ router.get('/patients/aggregated-diagnosis', async(req,res) => {
 });
 
 router.get("/doctors/appointment-count", async(req,res) => {
-    const db = await connectDb();
+    const db = await connectDB();
     const doctors = db.collection('doctors');
     //count #of appointments per doc 
     const result = await doctors.aggregate([
@@ -59,7 +59,7 @@ router.get("/doctors/appointment-count", async(req,res) => {
 });
 
 router.get("/patients/prescribed-meds", async(req,res) => {
-    const db = await connectDb();
+    const db = await connectDB();
     const patients = db.collection('patients');
     //list of prescribed meds
     const result = await patients.aggregate([
