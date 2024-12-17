@@ -1,5 +1,5 @@
-import {express} from 'express';
-import {connectDB} from '../config/database.js';
+import express from 'express';
+import connectDB from '../config/database.js';
 const router = express.router();
 
 router.get('/patients/aggregated-diagnosis', async(req,res) => {
