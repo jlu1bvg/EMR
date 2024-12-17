@@ -11,7 +11,7 @@ let db;
 export const connectDB = async () => {
     if (db) return db;
     try {
-        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
+        const client = await MongoClient.connect(uri);
         console.log("Connected to MongoDB");
         db = client.db(dbName);
         return db;
