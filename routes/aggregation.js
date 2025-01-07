@@ -10,16 +10,13 @@ router.get('/patients/aggregated-diagnosis', async(req,res) => {
     const result = await patients.aggregate([
         {
             $group: {
-                _id:'$diagnosis',
+                _id:'$medical_history',
                 count:{$sum:1}
             }
         },
         {
             $sort:{count:-1}
         },
-        {
-            $limit: 1
-        }
         ]
     ).toArray();
     res.json(result);
@@ -32,29 +29,24 @@ router.get("/doctors/appointment-count", async(req,res) => {
     const result = await doctors.aggregate([
         {
             $group:{
-                _id:'$doctor_id',
-                count:{$sum:1}
-            }
+                _id:'$_id',
+                appointment_count: {$sum:{$size: '$available_slots'}},
+                first_name:{$first:'$first_name'},
+                last_name:{$first:'$last_name'},
+                specialization:{$first:'$specialization'}
+            },
+            
         },
         {
-            $lookup:{
-                from:'patients',
-                localField:'_id',
-                foreignField:'doctor_id',
-                as:'doctor_info'
-            }
-        },
-        {
-            $unwind:'$doctor_info'//flatten it
-        },
-        {
-            $project:{
-                _id:0,
-                doctor_id:'$_id',
-                doctor_name:'$doctor_info.doctor_name',
-                appointment_count:'$count'
-            }
+                $project:{
+                    _id:0,
+                    doctor_id:'$_id',
+                    doctor_name:{$concat:['$first_name',' ','$last_name']},
+                    specialization:1,
+                    appointment_count:1
+                }
         }
+        
     ]).toArray();
     res.json(result);
 });
